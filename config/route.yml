@@ -1,0 +1,5 @@
+# Route config
+route:
+  ping: MDSPokemonApi\Controller\DefaultController::ping
+  pokemonDB_GetPokemonList: MDSPokemonApi\Controller\PokemonDBController::getPokemonList
+  pokemonDB_GetPokemonDataByName: MDSPokemonApi\Controller\PokemonDBController::getPokemonDataByName

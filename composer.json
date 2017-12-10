@@ -1,0 +1,17 @@
+{
+    "name": "sercan/mds-pokemon-api",
+    "authors": [
+        {
+            "name": "SYBBT",
+            "email": "ysercanz@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/yaml": "^3.4"
+    },
+    "autoload": {
+      "psr-4": {
+        "MDSPokemonApi\\": "src/"
+      }
+    }
+}
