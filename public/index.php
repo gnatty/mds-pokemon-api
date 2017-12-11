@@ -10,8 +10,10 @@ error_reporting(E_ALL);
 require __DIR__ . '/../vendor/autoload.php';
 
 use MDSPokemonApi\Utils\GlobalUtils as du;
-use Symfony\Component\Yaml\Yaml;
+use MDSPokemonApi\Utils\ResponseUtils;
 use MDSPokemonApi\Exception\RouteNotFoundException;
+use Symfony\Component\Yaml\Yaml;
+
 // ----------------------------------------------------------------
 // ----------------------------------------------------------------
 
@@ -57,21 +59,22 @@ try {
   }
 
 } catch(Exception $e) {
-  $exClass = get_class($e);
+  $response     = new ResponseUtils();
+  $exClass      = get_class($e);
   switch ($exClass) {
     case 'MDSPokemonApi\Exception\RouteNotFoundException':
-      du::pre('pas de route');
+      $v = $response->toJsonWithCode('route not found', 'error', 404);
       break;
     case 'ReflectionException':
-      du::pre('error route class not found');
+      $v = $response->toJsonWithCode('route class not found', 'error', 404);
       break;
     case 'Symfony\Component\Yaml\Exception\ParseException':
-      du::pre('error route file not found');
+      $v = $response->toJsonWithCode('route file not found', 'error', 404);
       break;
     default:
-      du::pre('error : ' . $exClass);
+      $v = $response->toJsonWithCode('error : ' . $exClass, 'error', 404);
       break;
   }
-  du::pre($e->getMessage());
+  echo $v;
 }
 

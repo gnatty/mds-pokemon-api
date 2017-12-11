@@ -1,5 +1,14 @@
 # Route config
 route:
+
+  # -- TEST IF ROUNTING WORKS
   ping: MDSPokemonApi\Controller\DefaultController::ping
+
+  # -- MOCK DB
+  mockDB_LoadMockDb: MDSPokemonApi\Controller\MockDBController::loadMockDb
+  mockDB_GetPokemonList: MDSPokemonApi\Controller\MockDBController::getMockPokemonList
+  mockDB_GetPokemonDataByName: MDSPokemonApi\Controller\MockDBController::getPokemonDataByName
+
+  # -- POKEMON DB
   pokemonDB_GetPokemonList: MDSPokemonApi\Controller\PokemonDBController::getPokemonList
   pokemonDB_GetPokemonDataByName: MDSPokemonApi\Controller\PokemonDBController::getPokemonDataByName

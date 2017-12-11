@@ -3,14 +3,17 @@
 namespace MDSPokemonApi\Controller;
 
 use MDSPokemonApi\Utils\ResponseUtils;
+use MDSPokemonApi\Utils\GlobalUtils as du;
 
 class DefaultController {
 
-  public static function ping(ResponseUtils $res) {
+  public static $dirMockDB = __DIR__.'/../../pokemon_db';
+
+  public static function ping(ResponseUtils $response) {
 
     $data = 'pong';
 
-    return $res->toJsonWithCode(
+    return $response->toJsonWithCode(
       $data,
       'success'
     );

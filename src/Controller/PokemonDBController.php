@@ -46,7 +46,7 @@ class PokemonDBController {
   public static function getPokemonDataByName(ResponseUtils $response) {
     // ---
     if( empty($_GET['pokemon_name']) ) {
-      return $response->toJsonWithCode('pokemon not found', 'error', 404);
+      return $response->toJsonWithCode('get parameter [pokemon_name] needs to be set.', 'error', 404);
     }
     // ---
     // --- SOME URL.
