@@ -73,8 +73,6 @@ try {
 } catch(Exception $e) {
   $response     = new ResponseUtils();
   $exClass      = get_class($e);
-  du::pre($e);
-  exit();
   switch ($exClass) {
     case 'MDSPokemonApi\Exception\RouteNotFoundException':
       $v = $response->toJsonWithCode('route not found', 'error', 404);

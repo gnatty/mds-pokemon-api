@@ -74,12 +74,45 @@ class InsertPokemonController {
     // --- @table(name="pokemon")
     $pokemons = $contentPokemon['success']['data']['pokemons'];
     foreach ($pokemons as $pokemon) {
-      du::pre($pokRequest->insertPokemon($pokemon));
+      // --- @pokemon
+      $ret        = $pokRequest->insertPokemon($pokemon);
+      $pokemonId  = $ret['data'];
+      // --- @pokemon_stats_ability
+      $abilities  = $pokemon['stats']['pokedex']['abilities'];
+      $ret2       = $pokRequest->insertPokemonAbilities($abilities, $pokemonId);
+
+
     }
 
     exit();
   }
 
+  public static function insertAbilities(ResponseUtils $response, MysqlPdoUtils $db) {
+
+    $pokemonId            = 2;
+    $pokRequest           = new PokemonRequestutils($db);
+    $pokemonName          = 'venusaur';
+    $uri                  = du::serverUri() . '?page_name=mockDB_GetPokemonDataByName&pokemon_name=';
+    $contentPokemon       = json_decode(du::getPageContent($uri . $pokemonName), true);
+
+    if( !empty($contentPokemon['error']) ) {
+      return $response->toJsonWithCode('pokemon not found', 'error');
+    } 
+
+    $abilities = $contentPokemon['success']['data']['moves'];
+
+    foreach ($abilities as $ability) {
+      du::pre($ability);
+      $abilityId  = $pokRequest->getPokemonGlobalAbilityByName($ability['name']);
+      $check      = $pokRequest->checkIfPokemonAbilityExist($pokemonId, $abilityId);
+      // -- INSERT
+      if( $check['code'] === 404) {
+        $r = $pokRequest->insertPokemonAbility($pokemonId, $abilityId);
+        du::pre($r);
+      }
+    }
+
+  }
 
 
 

@@ -92,7 +92,7 @@ class PokemonRequestUtils {
     if( empty($result) ) {
       return du::dbResult('select', true, 404);
     } else {
-      return du::dbResult('select', true, 200);
+      return du::dbResult('select', $result['pok_id'], 200);
     }
   }
 
@@ -250,6 +250,7 @@ class PokemonRequestUtils {
 
     // -- first check if pokemon exist.
     $check = $this->checkIfPokemonExist($pok['name']);
+
     // -- INSERT.
     if( $check['code'] === 404 ) {
       $reqInsertPok = $this->ob()->prepare($queryInsert);
@@ -264,7 +265,7 @@ class PokemonRequestUtils {
       $reqUpdatePok = $this->ob()->prepare($queryUpdate);
       $reqUpdatePok->execute($params);
       if(!$this->db()->isError($reqUpdatePok)) {
-        return du::dbResult('update', true, 200);
+        return du::dbResult('update', $check['data'], 200);
       } else {
         return du::dbResult('update error', $this->db()->errorInfo($reqUpdatePok), 404);
       }
@@ -272,16 +273,114 @@ class PokemonRequestUtils {
     // ---
   }
 
+  public function getPokemonGlobalAbilityByName($abilityName) {
+    $abilityName = strtolower($abilityName);
+    $querySelect = '
+      SELECT
+        pga_id
+      FROM
+        pokemon_global_ability
+      WHERE
+        pga_name = :pga_name
+      ;
+    ';
+    $queryInsert = '
+      INSERT INTO
+        pokemon_global_ability
+        (pga_name)
+      VALUES
+        (:pga_name);
+      ;
+    ';
 
+    $params     = array(
+      'pga_name' => $abilityName
+    );
+    $reqSelect  = $this->ob()->prepare($querySelect);
+    $reqSelect->execute($params);
+    $result     = $reqSelect->fetch();
+    if( empty($result) ) {
+      $reqInsert = $this->ob()->prepare($queryInsert);
+      $reqInsert->execute($params);
+      if(!$this->db()->isError($reqInsert)) {
+        return du::dbResult('insert', $this->db()->lastInsertId($reqInsert), 200);
+      } else {
+        return du::dbResult('insert error', $this->db()->errorInfo($reqInsert), 404);
+      }
+    } else {
+      return du::dbResult('select', $result['pga_id'], 200);
+    }
+  }
 
+  public function checkIfPokemonAbilityExist($pokemonId, $abilityId) {
+    $querySelect = '
+      SELECT
+        psa_id
+      FROM
+        pokemon_stat_ability
+      WHERE
+        psa_pokemon = :psa_pokemon
+      AND
+        psa_ability = :psa_ability
+      ;
+    ';
+    $params = array(
+      'psa_pokemon' => $pokemonId,
+      'psa_ability' => $abilityId
+    );
+    // ---
+    $reqSelect   = $this->ob()->prepare($querySelect);
+    $reqSelect->execute($params);
+    $result      = $reqSelect->fetch();
+    if( empty($result) ) {
+      return du::dbResult('select', true, 404);
+    } else {
+      return du::dbResult('select', true, 200);
+    }
+  }
 
+  public function insertPokemonAbility($pokemonId, $abilityId) {
+    $queryInsert = '
+      INSERT INTO
+        pokemon_stat_ability
+        (psa_pokemon, psa_ability)
+      VALUES
+        (:psa_pokemon, :psa_ability)
+      ;
+    ';
+    $params = array(
+      'psa_pokemon' => $pokemonId,
+      'psa_ability' => $abilityId
+    );
+    // ---
+    $reqInsert   = $this->ob()->prepare($queryInsert);
+    $reqInsert->execute($params);
+    if( !$this->db()->isError($reqInsert) ) {
+      return du::dbResult('insert', true, 200);
+    } else {
+      return du::dbResult('insert error', $reqInsert->errorInfo(), 404);
+    }
+  }
 
-
-
-
-
-
-
+  public function insertPokemonAbilities($abilities, $pokemonId) {
+    $output = array(
+      'new' => 0,
+      'old' => 0
+    );
+    foreach ($abilities as $ability) {
+      $abilityId = $this->getPokemonGlobalAbilityByName($ability);
+      if($abilityId['code'] === 200) {
+        $abId = $abilityId['data'];
+        if( $this->checkIfPokemonAbilityExist($pokemonId, $abId)['code'] === 404 ) {
+          $v = $this->insertPokemonAbility($pokemonId, $abId);
+          $output['new']++;
+        } else {
+          $output['old']++;
+        }
+      }
+    }
+    return du::dbResult('insert pokemon abilities', $output, 200);
+  }
 
 
 }

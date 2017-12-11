@@ -18,3 +18,4 @@ route:
   insertPokemon_Ping: MDSPokemonApi\Controller\InsertPokemonController::ping
   insertPokemon_InsertEvol: MDSPokemonApi\Controller\InsertPokemonController::insertEvol
   insertPokemon_InsertPokemon: MDSPokemonApi\Controller\InsertPokemonController::insertPokemon
+  insertPokemon_InsertAbilities: MDSPokemonApi\Controller\InsertPokemonController::insertAbilities
