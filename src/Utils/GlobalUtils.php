@@ -34,6 +34,26 @@ class GlobalUtils {
     return $sContent;
   }
 
+  public static function checkVal($val, $type = null) {
+    if( empty($val) ) {
+      return null;
+    }
+    if( !empty($type) ) {
+      switch ( $type ) {
+        case 'string':
+          $val = addslashes($val);
+          break;
+        case 'int':
+          $val = intval($val);
+          break;
+        case 'float':
+          $val = floatval($val);
+          $val = empty($val) ? null : $val;
+      }
+    }
+    return $val;
+  }
+
   public static function createPokemonJsonFile($fileName, $data) {
     $pa = __DIR__ . '/../../pokemon_db/';
     $op = fopen($pa.$fileName, 'w+');

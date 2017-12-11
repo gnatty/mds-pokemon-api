@@ -71,10 +71,10 @@ class InsertPokemonController {
       return $response->toJsonWithCode('pokemon not found', 'error');
     } 
 
+    // --- @table(name="pokemon")
     $pokemons = $contentPokemon['success']['data']['pokemons'];
-
     foreach ($pokemons as $pokemon) {
-      du::pre($pokemon);
+      du::pre($pokRequest->insertPokemon($pokemon));
     }
 
     exit();
