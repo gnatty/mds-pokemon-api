@@ -3,6 +3,7 @@ route:
 
   # -- TEST IF ROUNTING WORKS
   ping: MDSPokemonApi\Controller\DefaultController::ping
+  test: MDSPokemonApi\Controller\DefaultController::test
 
   # -- MOCK DB
   mockDB_LoadMockDb: MDSPokemonApi\Controller\MockDBController::loadMockDb
@@ -12,3 +13,8 @@ route:
   # -- POKEMON DB
   pokemonDB_GetPokemonList: MDSPokemonApi\Controller\PokemonDBController::getPokemonList
   pokemonDB_GetPokemonDataByName: MDSPokemonApi\Controller\PokemonDBController::getPokemonDataByName
+
+  # -- INSERT POKEMON IN DB 
+  insertPokemon_Ping: MDSPokemonApi\Controller\InsertPokemonController::ping
+  insertPokemon_InsertEvol: MDSPokemonApi\Controller\InsertPokemonController::insertEvol
+  insertPokemon_InsertPokemon: MDSPokemonApi\Controller\InsertPokemonController::insertPokemon

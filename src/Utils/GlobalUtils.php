@@ -42,4 +42,12 @@ class GlobalUtils {
     return ($op && $wr && $cl);
   }
 
+  public static function dbResult($action, $data = null, $code = null) {
+    return array(
+      'action'    => $action,
+      'code'      => $code,
+      'data'      => $data
+    );
+  }
+
 }

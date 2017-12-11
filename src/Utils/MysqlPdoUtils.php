@@ -56,4 +56,19 @@ class MysqlPdoUtils {
     return $this->_ob;
   }
 
+  public function lastInsertId() {
+    return $this->_ob->lastInsertId();
+  }
+
+  public function isError($req) {
+    if( !empty($req->errorInfo()[1]) ) {
+      return true;
+    }
+    return false;
+  }
+
+  public function errorInfo($req) {
+    return $req->errorInfo();
+  }
+  
 }

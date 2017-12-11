@@ -43,7 +43,19 @@ try {
     if($param->hasType()) {
       // Inst class.
       $callClass            = $param->getClass()->name;
-      $args[$paramName]     = new $callClass();
+
+      // --- use for mysql params.
+      if($callClass == 'MDSPokemonApi\Utils\MysqlPdoUtils') {
+        $params = Yaml::parseFile(__DIR__ . '/../config/db.yml');
+        if( empty($params['mysql']) ) {
+          throw new Symfony\Component\Yaml\Exception\ParseException('');
+        }
+        $params = $params['mysql'];
+        $args[$paramName]     = new $callClass($params);
+      } else {
+        // -- else others class without params.
+        $args[$paramName]     = new $callClass();
+      }
     } elseif($param->isDefaultValueAvailable()) {
         $args[$paramName]   = $param->getDefaultValue();
     }
@@ -61,6 +73,8 @@ try {
 } catch(Exception $e) {
   $response     = new ResponseUtils();
   $exClass      = get_class($e);
+  du::pre($e);
+  exit();
   switch ($exClass) {
     case 'MDSPokemonApi\Exception\RouteNotFoundException':
       $v = $response->toJsonWithCode('route not found', 'error', 404);
